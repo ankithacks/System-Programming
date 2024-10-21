@@ -1,0 +1,64 @@
+#include<iostream>
+#include<winsock2.h>
+#include<ws2tcpip.h>
+#include<tchar.h>
+using namespace std;
+
+#pragma comment(lib, "ws2_32.lib")
+/*
+    initialize winsock library
+
+    create the socket
+
+    get ip and port on which it is running
+
+    bind the ip/port with the socket
+
+    listen to the sockets
+
+    accept the connection request
+
+    receive and send
+
+    close the socket connection
+*/
+
+bool Initialize(){
+    WSADATA data;
+    return WSAStartup(MAKEWORD(2,2), &data) == 0;
+}
+
+int main(){
+    if(!Initialize()){
+        cout<<"WinSock initialization failed!!"<<endl;
+        return 1;
+    }
+    cout<<"Server code"<<endl;
+
+    SOCKET listenSocket=socket(AF_INET, SOCK_STREAM, 0);
+
+    if(listenSocket ==  INVALID_SOCKET){
+        cout<<"socket creation failed!!"<<endl;
+        return 1;
+    }
+
+    // create address structure:-
+    sockaddr_in serveraddr;
+    serveraddr.sin_family=AF_INET;
+    serveraddr.sin_port=htons(8080); //host to network
+    
+    // converting ip adrress(0.0.0.0) and put it inside the sin_family in binary format:-
+    if(InetPton(AF_INET, _T("0.0.0.0"), &serveraddr.sin_addr) != 1){
+        cout<<"Setting address  structure failed"<<endl;
+        closesocket(listenSocket);
+        WSACleanup();
+        return 1;
+    }
+        
+    WSACleanup();
+    return 0;
+}
+
+
+// PS C:\Users\Desktop> g++ -o result test.cpp
+// PS C:\Users\Desktop> .\result.exe
