@@ -22,6 +22,7 @@ public class Server{
                 toClient.close();
                 fromClient.close();
                 acceptedconnection.close();
+                socket.close();
             }
         } catch (IOException e) {
             System.out.println("IOException occurred: " + e.getMessage());
